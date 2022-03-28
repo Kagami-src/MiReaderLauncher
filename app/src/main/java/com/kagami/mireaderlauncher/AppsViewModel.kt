@@ -24,7 +24,13 @@ class AppsViewModel(application: Application) : AndroidViewModel(application) {
     }
     suspend fun loadApps():List<AppData> = withContext(Dispatchers.Default){
         val packageManager = getApplication<Application>().packageManager
-        val systemPackages= setOf("com.kagami.mireaderlauncher","com.android.settings","com.duokan.einkreader","com.mgs.factorytest","com.android.mgs.pinyin")
+        val systemPackages= setOf(
+            "com.kagami.mireaderlauncher",
+            "com.android.settings",
+            "com.duokan.einkreader",
+            "com.mgs.factorytest",
+            "com.android.mgs.pinyin"
+        )
         val list=packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
             .filter {
                 !systemPackages.contains(it.packageName)

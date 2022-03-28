@@ -12,27 +12,28 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_app.view.*
+import com.kagami.mireaderlauncher.databinding.ActivityMainBinding
+import com.kagami.mireaderlauncher.databinding.ItemAppBinding
 
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: AppsViewModel
+    private lateinit var binding: ActivityMainBinding
+    private val viewModel: AppsViewModel by viewModels()
     lateinit var adapter:Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        viewModel = ViewModelProviders.of(this)[AppsViewModel::class.java]
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         adapter=Adapter()
-        recyclerView.adapter=adapter
+        binding.recyclerView.adapter=adapter
         buildNotification()
         viewModel.appsLiveData.observe(this, Observer {
             adapter.dataSet=it
@@ -81,7 +82,8 @@ class MainActivity : AppCompatActivity() {
         }
         val resultPendingIntent = PendingIntent.getActivity(
             this, 0,
-            Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+            Intent(this, MainActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val mNotificationBuilder = NotificationCompat.Builder(this,"mainchannel")
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val data=dataSet[position]
             holder.data=data
-            holder.itemView.run {
+            with(holder.binding) {
                 nameText.text=data.name
                 if(data.icon!=null){
                     imageView.setImageDrawable(data.icon)
@@ -135,6 +137,7 @@ class MainActivity : AppCompatActivity() {
 
     }
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val binding = ItemAppBinding.bind(view)
         lateinit var data:AppsViewModel.AppData
     }
 
