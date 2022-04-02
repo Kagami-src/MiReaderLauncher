@@ -3,6 +3,7 @@ package com.kagami.mireaderlauncher
 import android.app.Application
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,12 +25,9 @@ class AppsViewModel(application: Application) : AndroidViewModel(application) {
     }
     suspend fun loadApps():List<AppData> = withContext(Dispatchers.Default){
         val packageManager = getApplication<Application>().packageManager
-        val systemPackages= setOf(
-            "com.kagami.mireaderlauncher",
-            "com.android.settings",
-            "com.duokan.einkreader",
-            "com.mgs.factorytest",
-            "com.android.mgs.pinyin"
+        val systemPackages= setOf<String>(
+            "com.apps.moan",
+            "com.android.settings"
         )
         val list=packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
             .filter {
@@ -39,7 +37,7 @@ class AppsViewModel(application: Application) : AndroidViewModel(application) {
         list.forEach {
             var intent = packageManager.getLaunchIntentForPackage(it.packageName)
             if(intent!=null) {
-                //Log.e("kagamilog",it.packageName)
+                Log.e("kagamilog",it.packageName)
                 val lab=packageManager.getApplicationLabel(it)
                 val icon=packageManager.getApplicationIcon(it)
                 val data=AppData(lab.toString(),it.packageName,icon)

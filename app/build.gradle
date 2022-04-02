@@ -46,7 +46,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     def lifecycle_version = "2.4.1"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    //implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     // Optional : Kotlin extension (https://d.android.com/kotlin/ktx)
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 }

@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -16,10 +17,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.kagami.mireaderlauncher.databinding.ActivityMainBinding
 import com.kagami.mireaderlauncher.databinding.ItemAppBinding
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,11 +39,15 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adapter=Adapter()
-        binding.recyclerView.adapter=adapter
         buildNotification()
         viewModel.appsLiveData.observe(this, Observer {
             adapter.dataSet=it
         })
+
+        with(binding){
+            recyclerView.adapter=adapter
+        }
+
     }
 
     override fun onStart() {
